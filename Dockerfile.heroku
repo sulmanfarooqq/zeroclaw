@@ -33,20 +33,15 @@ RUN --mount=type=cache,id=zeroclaw-cargo-registry,target=/usr/local/cargo/regist
     --mount=type=cache,id=zeroclaw-web-target,target=/app/target,sharing=locked \
     cargo web build
 
-# Dockerfile.heroku — Shell-equipped variant of the ZeroClaw container.
+# Dockerfile.heroku — Heroku web image with PostgreSQL-backed memory.
 #
-# The default Dockerfile produces a distroless "release" image with no shell,
-# which is ideal for minimal attack surface but prevents the agent from using
-# shell-based tools (pwd, ls, git, curl, etc.).
+# It retains the Debian shell runtime for agent tools, enables the optional
+# PostgreSQL memory feature, and starts a verified local TLS tunnel to Heroku
+# Postgres because this ZeroClaw revision's synchronous Postgres client uses
+# NoTls. The gateway binds to Heroku's injected $PORT via the entrypoint.
 #
-# This variant uses debian:bookworm-slim as the runtime base and ships
-# essential CLI tools so the agent can operate as a full coding assistant.
-#
-# Build:
-#   docker build -f Dockerfile.heroku -t zeroclaw:debian .
-#
-# Or with docker compose:
-#   docker compose -f docker-compose.yml -f docker-compose.debian.yml up
+# Local build:
+#   docker build -f Dockerfile.heroku -t zeroclaw:heroku .
 
 # ── Stage 1: Build (match runtime glibc baseline) ───────────
 FROM ${ZEROCLAW_BASE_RUST_BOOKWORM} AS builder
