@@ -24,6 +24,7 @@ port = parsed.port or 5432
 connect_host = f"[{host}]" if ":" in host else host
 
 stunnel_config = f"""foreground = yes
+pid = /tmp/zeroclaw-postgres-stunnel.pid
 output = /dev/stdout
 debug = notice
 
