@@ -69,6 +69,17 @@ heroku logs --tail -a APP_NAME
 
 The Basic dyno is intended to avoid Eco's idle-sleep behavior. It can still restart during routine dyno cycling or after a fault; Postgres memory is independent of those restarts.
 
+## Schedule database backups
+
+Enable a daily logical backup and verify the schedule:
+
+```bash
+heroku pg:backups:schedule DATABASE_URL --at '02:00 UTC' -a APP_NAME
+heroku pg:backups:schedules -a APP_NAME
+```
+
+Essential-tier scheduled backups retain seven daily backups. Backups are not a substitute for checking that a restore works.
+
 ## Pair the gateway
 
 The gateway is configured to require pairing. After the app starts, generate a pairing code:
